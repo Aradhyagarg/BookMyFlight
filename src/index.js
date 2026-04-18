@@ -9,10 +9,10 @@ app.use('/api', apiRoutes);
 app.listen(ServerConfig.PORT, async () => {
     console.log(`Successfully started the server at PORT : ${ServerConfig.PORT}`);
     Logger.info("Successfully run server", {});
-    const { City, Airport } = require('./models');
+    /*const { City, Airport } = require('./models');
 
   const bengaluru = await City.findByPk(1);
-  console.log(bengaluru);
+  console.log(bengaluru);*/
 
   /*if (!bengaluru) {
     console.log("City not found");
@@ -33,7 +33,7 @@ app.listen(ServerConfig.PORT, async () => {
   //console.log("Created Airport:", airport);
 
   // fetch all airports of this city
-  const airportsInBlr = await bengaluru.getAirports();
-  console.log("Airports in BLR:", airportsInBlr);
+  /*const airportsInBlr = await bengaluru.getAirports();
+  console.log("Airports in BLR:", airportsInBlr);*/
 
 })
