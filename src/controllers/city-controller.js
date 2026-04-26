@@ -1,21 +1,24 @@
-const { StatusCodes } = require('http-status-codes')
-const CityService = require('../services/city-service');
-const { ErrorResponse, SuccessResponse } = require('../utils/index')
+const { StatusCodes } = require('http-status-codes');
+const { CityService } = require('../services');
+const { SuccessResponse } = require('../utils/common');
 
-async function createCity(req, res) {
+/**
+ * POST /cities
+ * Create a new city
+ */
+async function createCity(req, res, next) {
     try {
         const city = await CityService.createCity({
             name: req.body.name
         });
         SuccessResponse.data = city;
-        SuccessResponse.message = 'Successfully created an city';
+        SuccessResponse.message = 'Successfully created a city';
         return res.status(StatusCodes.CREATED).json(SuccessResponse);
     } catch (error) {
-        ErrorResponse.error = error;
-        return res.status(error.statusCode).json(ErrorResponse);
+        next(error);
     }
 }
 
 module.exports = {
     createCity
-}
+};

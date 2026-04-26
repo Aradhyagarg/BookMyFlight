@@ -1,63 +1,75 @@
-const { StatusCodes } = require('http-status-codes')
-const AirportService = require('../services/airplane-service');
-const { ErrorResponse, SuccessResponse } = require('../utils/index')
+const { StatusCodes } = require("http-status-codes");
+const { AirportService } = require("../services");
+const { SuccessResponse } = require("../utils/common");
 
-async function createAirport(req, res) {
-    try {
-        const airport = await AirportService.createAirport({
-            name: req.body.name,
-            code: req.body.code,
-            address: req.body.address,
-            cityId: req.body.cityId
-        });
-        SuccessResponse.data = airport;
-        SuccessResponse.message = 'Successfully created an airport';
-        return res.status(StatusCodes.CREATED).json(SuccessResponse);
-    } catch (error) {
-        ErrorResponse.error = error;
-        return res.status(error.statusCode).json(ErrorResponse);
-    }
+/**
+ * POST /airports
+ * Create a new airport
+ */
+async function createAirport(req, res, next) {
+  try {
+    const airport = await AirportService.createAirport({
+      name: req.body.name,
+      code: req.body.code,
+      address: req.body.address,
+      cityId: req.body.cityId,
+    });
+    SuccessResponse.data = airport;
+    SuccessResponse.message = "Successfully created an airport";
+    return res.status(StatusCodes.CREATED).json(SuccessResponse);
+  } catch (error) {
+    next(error);
+  }
 }
 
-async function getAirports(req, res) {
-    try {
-        const airport = await AirportService.getAirports();
-        SuccessResponse.data = airport;
-        SuccessResponse.message = 'Successfully fetched all airport';
-        return res.status(StatusCodes.OK).json(SuccessResponse);
-    } catch (error) {
-        ErrorResponse.error = error;
-        return res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponse);
-    }
+/**
+ * GET /airports
+ * Get all airports
+ */
+async function getAirports(req, res, next) {
+  try {
+    const airports = await AirportService.getAirports();
+    SuccessResponse.data = airports;
+    SuccessResponse.message = "Successfully fetched all airports";
+    return res.status(StatusCodes.OK).json(SuccessResponse);
+  } catch (error) {
+    next(error);
+  }
 }
 
-async function getAirport(req, res) {
-    try {
-        const airport = await AirportService.getAirport(req.params.id);
-        SuccessResponse.data = airport;
-        SuccessResponse.message = 'Successfully fetched the airport';
-        return res.status(StatusCodes.OK).json(SuccessResponse);
-    } catch (error) {
-        ErrorResponse.error = error;
-        return res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponse);
-    }
+/**
+ * GET /airports/:id
+ * Get a single airport by ID
+ */
+async function getAirport(req, res, next) {
+  try {
+    const airport = await AirportService.getAirport(req.params.id);
+    SuccessResponse.data = airport;
+    SuccessResponse.message = "Successfully fetched the airport";
+    return res.status(StatusCodes.OK).json(SuccessResponse);
+  } catch (error) {
+    next(error);
+  }
 }
 
-async function destroyAirport(req, res) {
-    try {
-        const airport = await AirportService.destoryAirport(req.params.id);
-        SuccessResponse.data = airport;
-        SuccessResponse.message = 'Successfully delete the airport';
-        return res.status(StatusCodes.OK).json(SuccessResponse);
-    } catch (error) {
-        ErrorResponse.error = error;
-        return res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponse);
-    }
+/**
+ * DELETE /airports/:id
+ * Delete an airport by ID
+ */
+async function destroyAirport(req, res, next) {
+  try {
+    const response = await AirportService.destoryAirport(req.params.id);
+    SuccessResponse.data = response;
+    SuccessResponse.message = "Successfully deleted the airport";
+    return res.status(StatusCodes.OK).json(SuccessResponse);
+  } catch (error) {
+    next(error);
+  }
 }
 
 module.exports = {
-    createAirport,
-    getAirports,
-    getAirport,
-    destroyAirport
+  createAirport,
+  getAirports,
+  getAirport,
+  destroyAirport,
 };

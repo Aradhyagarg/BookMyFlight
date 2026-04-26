@@ -1,39 +1,34 @@
 const express = require("express");
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
 
 const { ServerConfig, Logger } = require("./config");
 const apiRoutes = require("./routes");
+const swaggerSpec = require('./config/swagger-config');
+const errorHandler = require('./middlewares/error-handler');
+
 const app = express();
+
+// Middlewares
+app.use(helmet());
+app.use(cors());
+app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+// Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// API Routes
 app.use('/api', apiRoutes);
+
+// Global Error Handler
+app.use(errorHandler);
+
 app.listen(ServerConfig.PORT, async () => {
     console.log(`Successfully started the server at PORT : ${ServerConfig.PORT}`);
+    console.log(`Swagger documentation available at http://localhost:${ServerConfig.PORT}/api-docs`);
     Logger.info("Successfully run server", {});
-    /*const { City, Airport } = require('./models');
-
-  const bengaluru = await City.findByPk(1);
-  console.log(bengaluru);*/
-
-  /*if (!bengaluru) {
-    console.log("City not found");
-    return;
-  }*/
-
-  //const bengaluru = await City.create({
-    name: 'Bengaluru'
-  //});
-
-  // create airport via association (best way)
-  /*const airport = await bengaluru.createAirport({
-    name: 'Kempegowda Airport',
-    code: 'BLR',
-    address: 'Bangalore'
-  });*/
-
-  //console.log("Created Airport:", airport);
-
-  // fetch all airports of this city
-  /*const airportsInBlr = await bengaluru.getAirports();
-  console.log("Airports in BLR:", airportsInBlr);*/
-
-})
+});

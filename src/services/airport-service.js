@@ -8,7 +8,7 @@ async function createAirport(data) {
         const airport = await airportRepository.create(data);
         return airport;
     } catch (error) {
-        if (error.name === 'SequelizeValidationError') {
+        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
             let explanation = [];
             error.errors.forEach((err) => {
                 explanation.push(err.message);
@@ -24,7 +24,7 @@ async function getAirport(id) {
         const airport = await airportRepository.get(id);
         return airport;
     } catch (error) {
-        throw error;
+        throw new AppError('Cannot fetch the data of the Airport', StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 

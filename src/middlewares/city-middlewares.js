@@ -1,10 +1,13 @@
 const { StatusCodes } = require('http-status-codes');
 const { ErrorResponse } = require('../utils/common');
+const { citySchema } = require('../utils/common/validation-schemas');
 const AppError = require('../utils/errors/app-error');
+
 function validateCreateRequest(req, res, next) {
-    if (!req.body.name) {
+    const { error } = citySchema.validate(req.body);
+    if (error) {
         ErrorResponse.message = 'Something went wrong while creating city';
-        ErrorResponse.error = new AppError(['City Name Number not found'], StatusCodes.BAD_REQUEST);
+        ErrorResponse.error = new AppError([error.details[0].message], StatusCodes.BAD_REQUEST);
         return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
     }
     next();
